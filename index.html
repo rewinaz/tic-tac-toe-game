@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main class="gameplay-area hidden">
+      <section id="menu-area">
+        <div id="logo">
+          <i class="fa-solid fa-x"></i>
+          <i class="fa-solid fa-o"></i>
+        </div>
+        <div id="player-turn">
+          <div id="current-turn">
+            <span>turn</span>
+          </div>
+        </div>
+        <div id="restart-btn">
+          <i class="fa-solid fa-arrow-rotate-right"></i>
+        </div>
+      </section>
+      <!--  -->
+      <section id="game-area">
+        <div class="xo" id="0"></div>
+        <div class="xo" id="1"></div>
+        <div class="xo" id="2"></div>
+        <div class="xo" id="3"></div>
+        <div class="xo" id="4"></div>
+        <div class="xo" id="5"></div>
+        <div class="xo" id="6"></div>
+        <div class="xo" id="7"></div>
+        <div class="xo" id="8"></div>
+      </section>
+      <!--  -->
+      <section id="score-area">
+        <div id="player-1">Player1<span>0</span></div>
+        <div id="draw">Ties<span>0</span></div>
+        <div id="player-2">Player2<span>0</span></div>
+      </section>
+    </main>
+
+    <!-- start menu -->
+    <div class="start-menu">
+      <div class="selection-area">
+        <p>Pick Player 1'st Mark</p>
+        <div class="xo-selector">
+          <div class="xo-btn x-btn">
+            <i class="fa-solid fa-x"></i>
+          </div>
+          <div class="xo-btn o-btn">
+            <i class="fa-solid fa-o"></i>
+          </div>
+        </div>
+        <p>Remember x Goes First</p>
+      </div>
+      <!--  -->
+      <div class="game-mode-area">
+        <!-- <button class="mode-selectors cpu-mode-btn">New Game (vs Cpu)</button> -->
+        <button class="mode-selectors player-mode-btn">
+          New Game (vs Player)
+        </button>
+      </div>
+    </div>
+
+    <!-- end menu -->
+    <div class="popup-menu hidden">
+      <h3>You Won</h3>
+      <div class="winner-text">
+        <div id="winner-text-popup"></div>
+        <span>Takes The Round</span>
+      </div>
+      <div class="popup-btns">
+        <div id="quit-btn">Quit</div>
+        <div id="next-btn">Next Round</div>
+      </div>
+    </div>
+    <!-- restart menu -->
+    <!-- end menu -->
+    <div class="restart-menu hidden">
+      <h3>Restart Game?</h3>
+      <div class="popup-btns">
+        <div id="no-btn">No, Cancel</div>
+        <div id="yes-btn">Yes, Restart</div>
+      </div>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>
