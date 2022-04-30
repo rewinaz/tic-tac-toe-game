@@ -36,6 +36,8 @@ let player1TotalWin = 0;
 let player2TotalWin = 0;
 let totalDraw = 0;
 let totalTurns = 0;
+let mode = "";
+
 const winningPossibilities = [
   [0, 1, 2],
   [3, 4, 5],
@@ -66,13 +68,21 @@ const startGame = () => {
   });
 
   // adding eventListner selecting game mode
-  gameModeSelector.forEach((modeBtn) => {
-    modeBtn.addEventListener("click", function (e) {
-      if (player1State) {
-        startMenu.classList.add("hidden");
-        gamePlayArea.classList.remove("hidden");
-      }
-    });
+  playerModeBtn.addEventListener("click", function (e) {
+    if (player1State) {
+      startMenu.classList.add("hidden");
+      gamePlayArea.classList.remove("hidden");
+    }
+    mode = "vsplayer";
+  });
+
+  cpuModeBtn.addEventListener("click", function () {
+    mode = "vscpu";
+    // hiding menus
+    if (player1State) {
+      startMenu.classList.add("hidden");
+      gamePlayArea.classList.remove("hidden");
+    }
   });
 };
 
@@ -89,10 +99,9 @@ const gameEventHandler = (e) => {
   playerTurn
     ? player1Score.push(+e.target.id)
     : player2Score.push(+e.target.id);
+  e.target.classList.add("selected");
   //check win
   if (player1Score.length >= 3) checkWin();
-  //switch turn
-  playerTurn = !playerTurn;
   currentTurn.textContent = "";
   currentTurn.insertAdjacentHTML(
     "beforeend",
@@ -100,6 +109,11 @@ const gameEventHandler = (e) => {
       playerTurn ? player1State : player2State
     }"></i> <span>Turn</span>`
   );
+  // cpu mode
+  playerTurn = !playerTurn;
+  if (mode === "vscpu") {
+    cpuMode();
+  }
 };
 
 xoBtns.forEach((xoBtn) => {
@@ -120,6 +134,9 @@ yesBtn.addEventListener("click", function () {
   player1TotalWin = 0;
   player2TotalWin = 0;
   totalDraw = 0;
+  scoreBoardTextDraw.textContent = 0;
+  scoreBoardTextP1.textContent = 0;
+  scoreBoardTextP2.textContent = 0;
 });
 noBtn.addEventListener("click", () => {
   restartMenu.classList.add("hidden");
@@ -127,33 +144,34 @@ noBtn.addEventListener("click", () => {
 // reset ends here
 
 const checkWin = () => {
+  console.log(playerTurn ? `player${playerTurn}` : `cpu${playerTurn}`);
   let isWinner = false;
-  if (totalTurns === 9) {
-    isWinner = 0;
-  } else if (playerTurn) {
+  if (playerTurn) {
     winningPossibilities.forEach((possiblity) => {
       if (possiblity.every((el) => player1Score.includes(el))) {
         isWinner = possiblity.every((el) => player1Score.includes(el));
       }
     });
-  } else {
+  } else if (playerTurn === false) {
     winningPossibilities.forEach((possiblity) => {
       if (possiblity.every((el) => player2Score.includes(el))) {
         isWinner = possiblity.every((el) => player2Score.includes(el));
       }
     });
+  } else if (totalTurns === 9) {
+    isWinner = 0;
   }
   if (isWinner || totalTurns === 9) {
-    isWinner && totalTurns < 9 ? player1TotalWin++ : player2TotalWin++;
+    if (totalTurns !== 9) playerTurn ? player1TotalWin++ : player2TotalWin++;
     totalTurns === 9 && totalDraw++;
     scoreBoardTextDraw.textContent = totalDraw;
     scoreBoardTextP1.textContent = player1TotalWin;
     scoreBoardTextP2.textContent = player2TotalWin;
-    gameEnd(isWinner);
+    gameEnd();
   }
 };
 
-const gameEnd = (winner) => {
+const gameEnd = () => {
   popupMenu.classList.remove("hidden");
   if (totalTurns === 9) {
     winnerText.insertAdjacentHTML("beforeend", `Draw`);
@@ -191,11 +209,41 @@ const resetToInitial = () => {
   player2Score = [];
   selectOBtn.classList.remove("xo-selected");
   selectXBtn.classList.remove("xo-selected");
+  totalTurns = 0;
 
   winnerText.textContent = "";
   xoBtns.forEach((xoBtn) => {
     xoBtn.removeEventListener("click", gameEventHandler);
     xoBtn.textContent = "";
+    xoBtn.classList.remove("selected");
     xoBtn.addEventListener("click", gameEventHandler, { once: true });
   });
 };
+
+// cpu mode
+function cpuMode() {
+  let availableSpots = [];
+  // checking for available spots
+  xoBtns.forEach((xoBtn, i) => {
+    if (xoBtn.classList.contains("selected") === false) availableSpots.push(i);
+  });
+  if (availableSpots.length > 1 && playerTurn == false && totalTurns < 9) {
+    let random = Math.floor(Math.random() * (availableSpots.length - 1));
+    let index = availableSpots[random];
+    xoBtns[index].classList.add("selected");
+    xoBtns[index].insertAdjacentHTML(
+      "beforeend",
+      ` <i class="fa-solid fa-${playerTurn ? player1State : player2State}"></i>`
+    );
+    xoBtns[index].removeEventListener("click", gameEventHandler);
+    player2Score.push(index);
+    totalTurns++;
+    availableSpots.splice(random, 1);
+    console.log("EXPECT ME");
+    if (player1Score.length >= 3) checkWin();
+    playerTurn = !playerTurn;
+  }
+  console.log(availableSpots, player2Score, player1Score, totalTurns);
+}
+
+
